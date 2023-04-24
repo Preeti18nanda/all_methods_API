@@ -1,0 +1,205 @@
+openapi: 3.0.0
+info:
+  title: Image Service API
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/PREETINANDA/image_api/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /images/{image_id}:
+    get:
+      summary: Retrieves image data for a specific image ID
+      operationId: images_image_id_get
+      parameters:
+      - name: image_id
+        in: path
+        description: The ID of the image
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: Uploads a new image
+      operationId: images_image_id_post
+      parameters:
+      - name: image_id
+        in: path
+        description: The ID of the image
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: The image data and filename
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/images_image_id_body'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /images/latest:
+    get:
+      summary: Retrieves the latest image in image format
+      operationId: images_latest_get
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+                x-content-type: image/jpeg
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /zip/{zip_id}:
+    post:
+      summary: Uploads a new zip file
+      operationId: zip_zip_id_post
+      parameters:
+      - name: zip_id
+        in: path
+        description: The ID of the zip file
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: The zip file data and filename
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/zip_zip_id_body'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_zip'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /zip:
+    get:
+      summary: Retrieves a zip file containing up to 5 of the most recent images.
+      operationId: zip_get
+      responses:
+        "200":
+          description: OK
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+                x-content-type: application/zip
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /images/upload:
+    post:
+      summary: Uploads multiple images
+      operationId: images_upload_post
+      requestBody:
+        description: The image data and filename
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/images_upload_body'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    inline_response_200:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: string
+          format: byte
+      example:
+        data: ""
+        message: message
+        status: status
+    images_image_id_body:
+      type: object
+      properties:
+        data:
+          type: string
+          format: byte
+        filename:
+          type: string
+    inline_response_201:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        image_id:
+          type: string
+      example:
+        message: message
+        image_id: image_id
+        status: status
+    inline_response_201_zip:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        zip_id:
+          type: string
+      example:
+        message: message
+        zip_id: zip_id
+        status: status
+    zip_zip_id_body:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    imagesupload_images:
+      type: object
+      properties:
+        data:
+          type: string
+          format: byte
+        filename:
+          type: string
+    images_upload_body:
+      required:
+      - images
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/imagesupload_images'
+
